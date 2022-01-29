@@ -1,20 +1,6 @@
 import React from 'react';
 import './App.css';
 
-function createTable() {
-  let rows = ['row1', 'row2', 'row3', 'row4', 'row5', 'row6'];
-  let cols = ['col1', 'col2', 'col3', 'col4', 'col5'];
-  return (
-    <table>
-      <tbody>
-      {rows.map((r) => <tr key={r}>
-        {cols.map((c) => <td key={r + ' ' + c}></td>)}
-      </tr>)}
-      </tbody>
-    </table>
-  );
-}
-
 var isAlpha = function(ch){
   return /^[A-Z]$/i.test(ch);
 }
@@ -33,38 +19,66 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      gameOver: false,
       round: 1,
       history: [],
-      game: createTable(),
+      game: [[' ',' ',' ',' ',' '],
+      [' ',' ',' ',' ',' '],
+      [' ',' ',' ',' ',' '],
+      [' ',' ',' ',' ',' '],
+      [' ',' ',' ',' ',' '],
+      [' ',' ',' ',' ',' ']],
       letters: new Set(),
       answer: "power"
     };
   }
 
+  update = (guess) => {
+    this.setState(state => ({
+      round: state.round + 1,
+      history: [...state.history, guess],
+    }))
+
+    for(let i=0; i<5; i++) {
+      if(!this.state.letters.has(guess[i])) {
+        this.setState(state => ({
+          letters: new Set(state.letters).add(guess[i])
+        }))
+      }
+    }
+
+    let temp = this.state.game;
+    for(let i=0; i<5; i++) {
+      temp[this.state.round - 1][i] = guess[i];
+    }
+    this.setState({
+      game: temp
+    })
+  }
+
   guess = (e) => {
     e.preventDefault();
     let guess = e.target[0].value;
+    let {gameOver} = this.state;
 
-    if(validGuess(guess) === true) {
-      //if(this.state.round < 7) {
-        this.setState(state => ({
-          round: state.round + 1,
-          history: [...state.history, guess],
-        }))
-
-        for(let i=0; i<5; i++) {
-          if(!this.state.letters.has(guess[i])) {
-            this.setState(state => ({
-              letters: new Set(state.letters).add(guess[i])
-            }))
+    if(!gameOver) {
+      if(validGuess(guess) === true) {
+        if(this.state.round < 7) {
+          this.update(guess);
+          if(guess === this.state.answer) {
+            alert('You won!');
+            this.setState({
+              gameOver: true
+            })
           }
+        } 
+        else {
+          alert("Game over!");
         }
-      /*} 
-      else {
-        alert("Game over!");
-      }*/
+      }
     }
-  }
+    e.target[0].value = '';
+    }
 
   render() {
     return (
@@ -72,8 +86,16 @@ class App extends React.Component {
       <header className="App-header">
         <p>Wordle</p>
       </header>
+
       <main>
-        {this.state.game}
+        <table>
+          <tbody>
+            {this.state.game.map((r,Rindex) => <tr key={Rindex}>
+              {r.map((c,Cindex) => <td key={String(Rindex) + String(Cindex)}>{c}</td>)}
+            </tr>)}
+          </tbody>
+        </table>
+
         <form onSubmit={this.guess}>
         <input type="text"></input><button>Submit</button>
         </form>
