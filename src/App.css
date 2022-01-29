@@ -1,0 +1,15 @@
+body {
+  background-color: #081B33;
+  color: white;
+}
+
+table {
+  border: solid 1px white;
+}
+
+td {
+  padding: 1px;
+  width: 2em;
+  height: 2em;
+  border: solid 1px white;
+}
