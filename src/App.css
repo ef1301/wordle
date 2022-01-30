@@ -1,9 +1,11 @@
-body {
+body, button {
   background-color: #081B33;
   color: white;
+  text-align: center;
 }
 
 table {
+  margin: auto;
   border: solid 1px white;
   color: white;
 }
@@ -13,4 +15,26 @@ td {
   width: 2em;
   height: 2em;
   border: solid 1px white;
+}
+
+#keyboard {
+  margin: 1% auto;
+  width: 50vw;
+}
+
+#keyboard button {
+  font-size: 1.5em;
+  padding: .25em;
+}
+
+.letters {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.letters button {
+  text-align: center;
+  width: 2em;
+  height: 2em;
 }
