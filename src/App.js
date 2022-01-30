@@ -31,8 +31,30 @@ class App extends React.Component {
       [' ',' ',' ',' ',' ']],
       letters: new Set(),
       correctLetters: new Set([...'shady']),
-      answer: 'shady'
+      answer: 'shady',
+      input: ''
     };
+  }
+
+  textInput = (e) => {
+    e.preventDefault();
+    this.setState({
+      input: e.target.value
+    });
+  }
+
+  keyPress = (e) => {
+    e.preventDefault();
+    this.setState(state => ({
+      input: state.input + e.target.value
+    }))
+  }
+
+  backspace = (e) => {
+    e.preventDefault();
+    this.setState(state => ({
+      input: state.input.substring(0,state.input.length - 2)
+    }))
   }
 
   update = (guess) => {
@@ -60,16 +82,16 @@ class App extends React.Component {
 
   guess = (e) => {
     e.preventDefault();
-    let guess = String(e.target[0].value).toLowerCase();
-    
-    let {gameOver} = this.state;
+    let {input, gameOver} = this.state;
 
     if(!gameOver) {
-      if(validGuess(guess) === true) {
-        e.target[0].value = '';
+      if(validGuess(input) === true) {
+        this.setState({
+          input: ''
+        });
         if(this.state.round < 7) {
-          this.update(guess);
-          if(guess === this.state.answer) {
+          this.update(input);
+          if(input === this.state.answer) {
             alert('You won!');
             this.setState({
               gameOver: true
@@ -86,15 +108,15 @@ class App extends React.Component {
 
       }
     }
-
+/*
     else {
       e.target[0].disabled = true;
       e.target[1].disabled = true;
-    }
+    }*/
   }
 
   render() {
-    let {answer, game, letters, correctLetters} = this.state;
+    let {answer, game, letters, correctLetters, input} = this.state;
     return (
     <div className="App">
       <header className="App-header">
@@ -121,8 +143,8 @@ class App extends React.Component {
         </table>
 
         <form onSubmit={this.guess}>
-        <input type="text"></input><button>Submit</button>
-        <Keyboard letters={letters}/>
+        <input type="text" value={input} onChange={this.textInput}></input><button>Submit</button>
+        <Keyboard letters={letters} backspace={this.backspace} keyPress={this.keyPress} guess={this.guess}/>
         </form>
       </main>
     </div>

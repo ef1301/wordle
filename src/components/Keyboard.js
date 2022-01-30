@@ -6,19 +6,25 @@ class Keyboard extends React.Component {
     }
     render() {
         let letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().split("");
-        console.log(letters);
         return(
             <div id="keyboard">
                 <div className="letters">
                 {letters.map((letter,index) => {
                     if(this.props.letters.has(letter)) {
-                        return (<button style={{backgroundColor: 'gray', color: '#081B33'}} key={letter + index}>{letter}</button>);
+                        return (
+                        <button onClick={this.props.keyPress} 
+                                style={{backgroundColor: 'gray', color: '#081B33'}} 
+                                key={letter + index} value={letter}>{letter}</button>
+                        );
                     }
-                    return (<button key={letter + index}>{letter}</button>);
+                    return (<button onClick={this.props.keyPress}
+                                    key={letter + index} 
+                                    value={letter}>{letter}</button>
+                        );
                 })}
                 </div>
-                <button>Backspace</button>
-                <button>Enter</button>
+                <button onClick={this.props.backspace}>Backspace</button>
+                <button onClick={this.props.guess}>Enter</button>
             </div>
         );
     }
